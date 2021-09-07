@@ -1,0 +1,3 @@
+//factorial 
+//fibonacci
+//increasing decreasing
