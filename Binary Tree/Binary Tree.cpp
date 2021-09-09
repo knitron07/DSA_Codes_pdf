@@ -420,3 +420,7 @@ Node *root=tree_from_trav(pre,in,0,n-1);
 print(root);
 	 return 0;
 }
+
+
+
+
