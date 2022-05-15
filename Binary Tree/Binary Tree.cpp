@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+
 using namespace std;
 class Node{
 public:
@@ -15,8 +16,7 @@ public:
 	};
 
 
-Node *built_tree()
-{
+Node *built_tree(){
 	int d;
 	cin>>d;
 	// base case(to stop making children)
@@ -32,9 +32,8 @@ Node *built_tree()
 	
 	return root;
 	}
-	
-void print(Node *root)
-{
+
+void print(Node *root){
 	//base case
 	if(root==nullptr)
 		return;
@@ -51,8 +50,7 @@ void print(Node *root)
 	return;
 	}
 
-void inorder_print(Node *root)
-{
+void inorder_print(Node *root){
 	//base case
 	if(root==nullptr)
 		return;
@@ -120,11 +118,11 @@ void bfs(Node * root)
 		Node *f=q.front();
 		if(f==nullptr)
 		{	
-		q.pop();
-		cout<<endl;
-		if(!q.empty())
-			q.push(nullptr);
-		    }
+			q.pop();
+			cout<<endl;
+			if(!q.empty())
+				q.push(nullptr);
+		}
 		else
 		{
 			q.pop();
@@ -326,10 +324,10 @@ int print_at_distance_k(Node*root,Node*target,int dis)
     
 Node* LCA(Node *root,int a,int b)
 {
-    if(root==nullptr)
+    if(root == nullptr)
         return nullptr;
         
-    if(root->data==a or root->data ==b)
+    if(root->data == a or root->data == b)
         return root;
         
     Node *left=LCA(root->left,a,b);
@@ -349,11 +347,10 @@ public:
     int branch_sum;
     int max_sum;
     
-    Pair()
-    {
+    Pair(){
         branch_sum=0;
         max_sum=0;        
-        }
+    }
     };
     
 Pair max_sum_path(Node *root)
