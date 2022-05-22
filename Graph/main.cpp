@@ -640,4 +640,191 @@ int main()
     g.bfs();
     return 0;
     }
-//------------------------------------------------------------------------------
+//cycle detection in directed graph using stack------------------------------------------------------------------------------
+#include <iostream>
+#include <list>
+#include <queue>
+
+using namespace std;
+
+class Graph
+{
+    list<int> *l;
+    int V;
+    
+public:
+    Graph(int v)
+    {
+        V=v;
+        l=new list<int>[V];
+        }
+        
+    void addEdge(int x,int y)
+    {
+        l[x].push_back(y);
+        }
+        
+    
+bool cycle_helper(int node,bool*visited,bool *stack)
+{
+    visited[node]=true;
+    stack[node]=true;
+    
+    for(auto nbr:l[node])
+    {
+        // two case
+        if(stack[nbr]==true)
+        {
+            return true;
+            }
+        else if(visited[nbr]==false)
+        {
+            bool cycle_mila=cycle_helper(nbr,visited,stack);
+            if(cycle_mila)
+                return true;
+            }
+        }
+        
+        //leave a node 
+        stack[node]=false;
+        return false;
+    } 
+
+bool contain_cycle()
+{
+    bool *visited=new bool[V];
+    bool *stack=new bool[V];
+    
+    for(int i=0;i<V;i++)
+    {
+        visited[i]=stack[i]=0;
+        }
+        
+    return cycle_helper(0,visited,stack);
+    }
+
+    };
+    
+    
+int main()    
+{
+    Graph g(7);
+    
+    g.addEdge(0,1);
+    g.addEdge(1,2);
+    g.addEdge(2,3);
+    g.addEdge(3,4);
+    g.addEdge(4,5);
+    g.addEdge(4,2);
+    g.addEdge(5,6);
+    g.addEdge(1,5);
+
+    if(g.contain_cycle())
+        cout<<"cycle found"<<endl;
+    else
+        cout<<"cycle not forund"<<endl;
+    return 0;
+    }
+//Dijkistra algo (shortest path from single sources)-----------------------------------------------------------------------------
+#include <iostream>
+#include <list>
+#include <unordered_map>
+#include <set>
+#include <utility>
+#include <string>
+#include <climits>
+
+using namespace std;
+template<typename T>
+class Graph
+{                          //<city,list of pair having nbr city and distance>
+    unordered_map <T,list<pair<T,int>>> m;
+    
+public:
+    
+    void addEdge(T u,T v,int dist,bool bidir=true)
+    {
+        if(bidir)
+        {
+            m[u].push_back(make_pair(v,dist));
+            m[v].push_back(make_pair(u,dist));
+            }
+        else
+        {
+            m[u].push_back(make_pair(v,dist));
+            }
+        }
+        
+    void printadjlist()
+    {
+        for(auto node:m)
+        {
+            T city=node.first;
+            cout<<city<<"->";
+            for(auto nbr:node.second)
+            {
+                cout<<" ("<<nbr.first<<" "<<nbr.second<<") ,";
+                }
+            cout<<endl;
+            }
+        }
+        
+    void dijkstra_sssp(T src)
+    {
+        unordered_map<T,int> dist;
+        //making all distance of nodes to infinity
+        for(auto node:m)
+        {
+            T city=node.first;
+            dist[city]=INT_MAX;
+            }
+            
+        set<pair<int ,T>> s;
+        dist[src]=0;
+        s.insert(make_pair(0,src));
+        
+        while(s.empty()==false)
+        {
+            pair<int,T> p=*(s.begin());
+            T node=p.second;
+            int node_dist=p.first;
+            s.erase(s.begin());
+            for(auto nbr:m[node])
+            {
+                if(node_dist+nbr.second<dist[nbr.first])
+                {
+                    T dest=nbr.first;
+                     auto f=s.find(make_pair(dist[dest],dest));
+                     if(f!=s.end())
+                     {
+                         s.erase(f);
+                         }
+                         dist[dest]=node_dist+nbr.second;
+                         s.insert(make_pair(dist[dest],dest));
+                    
+                    }
+                }
+            }
+            
+        for(auto x:dist)
+        {
+            cout<<x.first<<" "<<x.second<<endl;;
+            }
+        }
+    };
+
+int main()
+{
+    Graph<string> g;
+    g.addEdge("delhi","alwar",4);
+    g.addEdge("delhi","jaipur",8);
+    g.addEdge("delhi","lucknow",20);
+    g.addEdge("alwar","jaipur",4);
+    g.addEdge("alwar","lucknow",24);
+    g.addEdge("alwar","kanpur",16);
+    g.dijkstra_sssp("delhi");
+
+    
+    return 0;
+    }
+//----------------------------------------------------------------------------------------
