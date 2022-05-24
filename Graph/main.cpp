@@ -991,3 +991,179 @@ int main()
 
     return 0;
 }
+//Prims algorithm for minimum spanning tree---------------------------------------------------------------------------------------
+
+#include <iostream>
+#include <list>
+#include <vector>
+#include <queue>
+using namespace std;
+
+class Graph{
+    vector<pair<int,int>> *l;
+    int V;
+public:
+    Graph(int n){
+        V=n;
+        l=new vector<pair<int,int>>[n];
+        
+    }
+    
+    void addEdge(int x,int y,int w){
+        l[x].push_back({y,w});
+        l[y].push_back({x,w});
+    }
+    
+    int prim_mst(){
+        //Init min heap
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> q;
+    
+        //anouter array
+        // visited array that denotes weater a node has been included in MST or NOT
+        bool* visited=new bool[V]{0};
+        int ans=0;
+        q.push({0,0}); //weight,node
+        
+        while(!q.empty())
+        {
+            auto best=q.top();
+            q.pop();
+            int to=best.second;
+            int weight=best.first;
+            
+            if(visited[to])
+                continue;
+                
+            ans+=weight;
+            visited[to]=true;
+            for(auto x:l[to])
+            {
+                if(!visited[x.first])
+                {
+                    q.push({x.second,x.first});
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+};
+
+int main()
+{
+    int n,m;
+    cin>>n>>m;
+    
+    Graph g(n);
+    for(int i=0;i<m;i++)
+    {
+        int x,y,w;
+        cin>>x>>y>>w;
+        g.addEdge(x-1,y-1,w);
+    }
+    
+    cout<<g.prim_mst()<<endl;
+
+    return 0;
+}
+//kruskal minimum spanning tree-----------------------------------------------------------------------
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class DSU{
+    int *parent;
+    int* rank;
+public:
+    DSU(int v){
+        parent=new int[v];
+        rank=new int[v];
+        for(int i=0;i<v;i++)
+        {
+            parent[i]=-1;
+            rank[i]=1;
+        }
+
+    }
+
+    int findSet(int x)
+    {
+        if(parent[x] == -1)
+        return x;
+
+        return parent[x]=findSet(parent[x]);
+    }
+
+    void unite(int x,int y){
+        int s1=findSet(x);
+        int s2=findSet(y);
+
+        if(s1!=s2)
+        {
+            if(rank[s1]>rank[s2])
+            {
+                parent[s2]=s1;
+                rank[s1]+=rank[s2];
+            }else{
+                parent[s1]=s2;
+                rank[s2]+=rank[s1];
+            }
+        }
+    }
+
+};
+
+class Graph{
+    int v;
+    vector<vector<int>> edgelist;
+public:
+    Graph(int v)
+    {
+        this->v=v;
+    }
+    void addEdge(int x,int y,int w){
+        edgelist.push_back({w,x,y});
+    }
+
+    int kruskal_mst(){
+
+        //1. sorting on the basis of weight
+        sort(edgelist.begin(),edgelist.end());
+        int ans=0;
+        DSU dsu(v);
+        //2. include the weight if both edge belongs to different set
+        for(auto edge:edgelist)
+        {
+            int x=edge[1];
+            int y=edge[2];
+            int w=edge[0];
+
+            int s1=dsu.findSet(x);
+            int s2=dsu.findSet(y);
+
+            if(s1!=s2)
+            {
+                dsu.unite(x,y);
+                ans+=w;
+            }
+        }
+
+        return ans;
+
+    }
+};
+
+int main(){
+   Graph g(4);
+   g.addEdge(0,1,1);
+   g.addEdge(1,3,3);
+   g.addEdge(3,2,4);
+   g.addEdge(2,0,2);
+   g.addEdge(0,3,2);
+   g.addEdge(1,2,2);
+
+   cout<<g.kruskal_mst()<<endl;
+}
+//-------------------------------------------------------------------
