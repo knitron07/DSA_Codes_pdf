@@ -737,7 +737,8 @@ int main()
 using namespace std;
 template<typename T>
 class Graph
-{                          //<city,list of pair having nbr city and distance>
+{                          
+    //<city,list of pair having nbr city and distance>
     unordered_map <T,list<pair<T,int>>> m;
     
 public:
@@ -798,9 +799,10 @@ public:
                      if(f!=s.end())
                      {
                          s.erase(f);
-                         }
-                         dist[dest]=node_dist+nbr.second;
-                         s.insert(make_pair(dist[dest],dest));
+                     }
+
+                     dist[dest]=node_dist+nbr.second;
+                     s.insert(make_pair(dist[dest],dest));
                     
                     }
                 }
